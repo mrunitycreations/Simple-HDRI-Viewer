@@ -1,0 +1,5 @@
+{
+  "name": "Simple HDRI viewer",
+  "description": "A simple HDRI viewer to preview environment maps on different materials. Upload your own HDRIs, adjust settings, and save/load your projects.",
+  "requestFramePermissions": []
+}

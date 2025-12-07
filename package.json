@@ -14,9 +14,9 @@
     "@angular/core": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/compiler": "^21.0.0",
-    "@angular/common": "^21.0.0",
     "@angular/build": "^21.0.0",
     "@angular/cli": "^21.0.0",
+    "@angular/common": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "tailwindcss": "latest"
   },

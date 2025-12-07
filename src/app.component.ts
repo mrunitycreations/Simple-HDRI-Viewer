@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, effect, AfterViewInit, WritableSignal, inject, Injector, runInInjectionContext, computed } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
@@ -129,7 +128,6 @@ type AnyProjectData = ProjectDataV1_2 | ProjectDataV1_1 | ProjectDataV1_0;
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage]
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('rendererCanvas', { static: true })
@@ -956,36 +954,24 @@ export class AppComponent implements AfterViewInit {
     this.loadingMessage.set('Saving project...');
     try {
         const hdriDataPromises = this.hdriList().map(async (hdri) => {
-            if (hdri.file) {
-                return { name: hdri.name, data: await this.fileToBase64(hdri.file) };
+            if (!hdri.file) {
+                const response = await fetch(hdri.url);
+                const blob = await response.blob();
+                const tempFile = new File([blob], hdri.name, { type: 'image/vnd.radiance' });
+                return { name: hdri.name, data: await this.fileToBase64(tempFile) };
             }
-
-            if (typeof hdri.url === 'string' && (hdri.url.startsWith('http') || hdri.url.startsWith('blob:'))) {
-                try {
-                    const response = await fetch(hdri.url);
-                    if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
-                    const blob = await response.blob();
-                    const tempFile = new File([blob], hdri.name, { type: 'image/vnd.radiance' });
-                    return { name: hdri.name, data: await this.fileToBase64(tempFile) };
-                } catch (error) {
-                    console.error(`Failed to process HDRI from URL '${hdri.url}'`, error);
-                    return null;
-                }
-            }
-            
-            console.warn('Skipping invalid HDRI entry during save:', hdri);
-            return null;
+            return { name: hdri.name, data: await this.fileToBase64(hdri.file) };
         });
-        
-        const resolvedHdriData = (await Promise.all(hdriDataPromises)).filter((d): d is { name: string; data: string; } => d !== null);
 
         const [
+            resolvedHdriData, 
             floorTexture, 
             glassRoughnessTexture,
             matteRoughnessTexture,
             chromeRoughnessTexture,
             plasticRoughnessTexture
         ] = await Promise.all([
+            Promise.all(hdriDataPromises),
             this.floorTextureFile() ? this.fileToTextureData(this.floorTextureFile()!) : Promise.resolve(null),
             this.glassRoughnessTextureFile() ? this.fileToTextureData(this.glassRoughnessTextureFile()!) : Promise.resolve(null),
             this.matteRoughnessTextureFile() ? this.fileToTextureData(this.matteRoughnessTextureFile()!) : Promise.resolve(null),
@@ -1076,11 +1062,7 @@ export class AppComponent implements AfterViewInit {
             this.isLoading.set(true);
             this.loadingMessage.set('Loading project...');
 
-            this.hdriList().forEach(hdri => {
-                if (hdri.url && hdri.url.startsWith('blob:')) {
-                    URL.revokeObjectURL(hdri.url);
-                }
-            });
+            this.hdriList().forEach(hdri => URL.revokeObjectURL(hdri.url));
 
             const loadedHdris: HDRI[] = project.hdris.map(hdriData => {
                 const blob = this.base64ToBlob(hdriData.data);
@@ -1240,11 +1222,7 @@ export class AppComponent implements AfterViewInit {
       const demoHdri: HDRI = { name: 'Studio Small 09 Demo', url, file };
 
       // Make sure any previous object URLs are revoked
-      this.hdriList().forEach(hdri => {
-        if (hdri.url && hdri.url.startsWith('blob:')) {
-            URL.revokeObjectURL(hdri.url)
-        }
-      });
+      this.hdriList().forEach(hdri => URL.revokeObjectURL(hdri.url));
 
       // Reset scene to a good starting point
       this.hdriList.set([demoHdri]);

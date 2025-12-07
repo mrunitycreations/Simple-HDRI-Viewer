@@ -17,7 +17,7 @@
     <!-- Initial Upload Prompt -->
     <div class="absolute inset-0 z-20 flex items-center justify-center p-8">
       <div class="w-full max-w-lg text-center p-8 rounded-lg bg-white/90 dark:bg-gray-950/90 backdrop-blur-lg ring-1 ring-gray-900/10 dark:ring-white/20 text-adaptive">
-        <img ngSrc="SHV_logo.png" alt="SHV Logo" width="96" height="96" class="mx-auto mb-4" priority>
+        <img src="https://github.com/mrunitycreations/Simple-HDRI-Viewer/blob/main/SHV_logo.png?raw=true" alt="Simple HDRI Viewer Logo" class="mx-auto h-24 w-auto mb-4 rounded-lg">
         <h2 class="mt-2 text-2xl font-bold text-gray-900 dark:text-white">Simple HDRI viewer</h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Drag & drop an HDRI file, or select an option below to get started.</p>
         <div class="mt-6 flex flex-col items-center gap-3">
@@ -250,9 +250,9 @@
 
     <!-- UI Controls Sidebar -->
     <div class="absolute top-4 right-4 bottom-4 w-80 z-10 bg-white/90 dark:bg-gray-950/90 backdrop-blur-lg rounded-lg ring-1 ring-black/10 dark:ring-white/20 shadow-2xl flex flex-col p-4 text-gray-900 dark:text-white overflow-y-auto">
-      <div class="flex items-center mb-4 pb-4 border-b border-black/10 dark:border-white/20">
-        <img ngSrc="SHV_logo.png" alt="SHV Logo" width="40" height="40" class="mr-3">
-        <h1 class="text-xl font-bold tracking-wider">Simple HDRI viewer</h1>
+      <div class="flex items-center gap-3 mb-4 pb-4 border-b border-black/10 dark:border-white/20">
+         <img src="https://github.com/mrunitycreations/Simple-HDRI-Viewer/blob/main/SHV_logo.png?raw=true" alt="Logo" class="h-10 w-10 rounded-md">
+         <h1 class="text-xl font-bold tracking-wider">Simple HDRI viewer</h1>
       </div>
       
       <!-- Project Section -->
@@ -496,12 +496,12 @@
       <div class="p-6 text-sm text-gray-700 dark:text-gray-300 max-h-[60vh] overflow-y-auto">
           @switch (aboutPanelActiveTab()) {
               @case ('about') {
-                  <div class="animate-content-fade-in space-y-3">
-                    <img ngSrc="SHV_logo.png" alt="SHV Logo" width="80" height="80" class="mx-auto mb-4">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">Simple HDRI Viewer</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Version: Alpha 12.7.2025</p>
-                    <p>A simple yet powerful tool for artists and developers to preview HDRI environment maps on various materials in real-time. Upload your own HDRIs, tweak lighting and material properties, and see the results instantly.</p>
-                    <p>This application is built with Angular and Three.js, running in a modern, zoneless environment.</p>
+                  <div class="animate-content-fade-in space-y-3 text-center">
+                    <img src="https://github.com/mrunitycreations/Simple-HDRI-Viewer/blob/main/SHV_logo.png?raw=true" alt="Simple HDRI Viewer Logo" class="mx-auto h-20 w-auto mb-4 rounded-lg">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Simple HDRI Viewer</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Version: Alpha 12.7.2025</p>
+                    <p class="text-left">A simple yet powerful tool for artists and developers to preview HDRI environment maps on various materials in real-time. Upload your own HDRIs, tweak lighting and material properties, and see the results instantly.</p>
+                    <p class="text-left">This application is built with Angular and Three.js, running in a modern, zoneless environment.</p>
                   </div>
               }
               @case ('how-to') {

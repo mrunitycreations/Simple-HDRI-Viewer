@@ -1,5 +1,7 @@
 # SHV — Simple HDRI Viewer
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/9d392bcb-dac1-4809-b340-38f41e2ff9b0" />
+
+![SHV_preview](https://github.com/user-attachments/assets/8de028dc-b79c-4781-8a14-aa87261cab26)
+
 
 **Welcome to SHV (Simple HDRI Viewer)** — an open-source web application designed for fast, clean, and distraction-free previewing and evaluation of HDRI maps.  
 No cloud uploads, no data collection — everything runs **locally on your device**.

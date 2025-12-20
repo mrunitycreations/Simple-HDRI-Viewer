@@ -66,6 +66,7 @@ Toggle any scene object on or off to focus on specific lighting elements.
 
 ### Scene Screenshots
 Capture high-quality screenshots of the current scene with a single click — perfect for comparisons and documentation.
+
 <img width="64" height="58" alt="image" src="https://github.com/user-attachments/assets/71f75c26-425b-4eb6-b330-bc1fd21bf6d1" />
 
 ### Encrypted Project Save & Load

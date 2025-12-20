@@ -7,29 +7,29 @@ No cloud uploads, no data collection — everything runs **locally on your devic
 
 ---
 
-## ✨ Core Features
+## Core Features
 
-### 🚀 Instant HDRI Preview
+### Instant HDRI Preview
 Load and inspect your HDRI files in seconds. SHV does not upload or store any data externally — all processing happens locally in your browser.
 
-### 💻 Cross-Platform & Device Friendly
+### Cross-Platform & Device Friendly
 SHV supports **x86 and ARM architectures**, making it compatible with desktop PCs, laptops, tablets, and mobile devices.
 
 ![SHV_Phone](https://github.com/user-attachments/assets/b91c2c64-949d-4a7c-9c74-6ad71577e828)
 
-### 🎨 Tonemapping & Color Modes
+### Tonemapping & Color Modes
 Preview how your HDRI behaves under different color responses and LUTs using the **Tonemapping** feature.
 
 ![SHV_Tonnemaping](https://github.com/user-attachments/assets/ad5f712a-4efc-448e-bec8-3b6c95f141f0)
 
-### 🌞 Real-Time Shadow Computation
+### Real-Time Shadow Computation
 SHV can generate **real-time shadows** based on the brightest light source in the HDRI, making it ideal for sky maps with a visible sun.
 
 ![SHV_Light_computation](https://github.com/user-attachments/assets/48b08ec7-3bca-42eb-97c0-8e7439b6b02b)
 
 > ⚠️ **Note:** Handling multiple strong light sources is currently limited and will be improved in future updates.
 
-### 🧪 Material Test Presets
+### Material Test Presets
 Evaluate lighting behavior on different materials using built-in presets:
 - SHV Default  
 - Grayscale  
@@ -38,14 +38,14 @@ Evaluate lighting behavior on different materials using built-in presets:
 
 ![Presets](https://github.com/user-attachments/assets/d4243455-c42d-49a5-be11-33dae5e0cc4d)
 
-### 🛠 Custom Preset Creation
+### Custom Preset Creation
 Create your own testing presets:
 - Select **Custom Preset**
 - Adjust material parameters
 - Use **Save Preset** to store it on your device
 - Use **Upload Preset** to load it into the current project
 
-### 🎛 Material Editor
+### Material Editor
 Fine-tune test materials in real time:
 - Base color  
 - Roughness  
@@ -61,11 +61,11 @@ Toggle any scene object on or off to focus on specific lighting elements.
 
 <img width="295" height="167" alt="image" src="https://github.com/user-attachments/assets/ed38f881-400f-442f-89b9-3242a628e9c5" />
 
-### 📸 Scene Screenshots
+### Scene Screenshots
 Capture high-quality screenshots of the current scene with a single click — perfect for comparisons and documentation.
 <img width="64" height="58" alt="image" src="https://github.com/user-attachments/assets/71f75c26-425b-4eb6-b330-bc1fd21bf6d1" />
 
-### 💾 Encrypted Project Save & Load
+### Encrypted Project Save & Load
 Save and load complete projects using SHV’s **custom encrypted project format**.
 
 ![Project_save](https://github.com/user-attachments/assets/6817f1ac-f6a4-4335-af19-6afd0bcf250c)

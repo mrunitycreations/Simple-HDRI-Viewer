@@ -1,5 +1,11 @@
+
+
 <div class="relative w-full h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-  <canvas #rendererCanvas class="absolute top-0 left-0 w-full h-full"></canvas>
+  <canvas #rendererCanvas 
+          class="absolute top-0 left-0 w-full h-full"
+          [class.cursor-pointer]="isMaterialEditorOpen()"
+          [class.cursor-crosshair]="isPickingLight()"
+          [class.grayscale]="toneMapping() === 'Grayscale' && colorSpace() === 'Linear sRGB'"></canvas>
 
   @if (isLoading()) {
   <div class="absolute inset-0 bg-white/70 dark:bg-black/70 flex items-center justify-center z-50">
@@ -35,35 +41,158 @@
                 <input type="file" accept=".hdriv" class="hidden" (change)="onProjectLoad($event)">
             </label>
         </div>
-        <div class="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
-            <button (click)="isAboutPanelOpen.set(true)" class="mx-auto px-4 py-2 text-sm font-medium text-slate-900 dark:text-white bg-slate-900/10 dark:bg-white/10 rounded-md hover:bg-slate-900/20 dark:hover:bg-white/20 ring-1 ring-inset ring-slate-900/20 dark:ring-white/30 transition-colors inline-flex items-center justify-center gap-2">
+        <div class="mt-8 pt-6 border-t border-black/10 dark:border-white/10 flex items-center justify-center gap-3">
+            <button (click)="isAboutPanelOpen.set(true)" class="w-32 px-4 py-2 text-sm font-medium text-slate-900 dark:text-white bg-slate-900/10 dark:bg-white/10 rounded-md hover:bg-slate-900/20 dark:hover:bg-white/20 ring-1 ring-inset ring-slate-900/20 dark:ring-white/30 transition-colors inline-flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined !text-base">help_outline</span>
                 <span>About</span>
             </button>
+            <a href="https://github.com/mrunitycreations/Simple-HDRI-Viewer" target="_blank" rel="noopener noreferrer" class="w-32 px-4 py-2 text-sm font-medium text-slate-900 dark:text-white bg-slate-900/10 dark:bg-white/10 rounded-md hover:bg-slate-900/20 dark:hover:bg-white/20 ring-1 ring-inset ring-slate-900/20 dark:ring-white/30 transition-colors inline-flex items-center justify-center gap-2">
+                <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub</span>
+            </a>
         </div>
       </div>
     </div>
   } @else if (hdriList().length > 0) {
     <!-- Top Left Buttons -->
     <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
-      <button (click)="isMaterialEditorOpen.set(!isMaterialEditorOpen())" title="Toggle Material Editor" class="w-12 h-12 bg-white dark:bg-white/10 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors">
+      <button (click)="isMaterialEditorOpen.set(!isMaterialEditorOpen()); isLightEditorOpen.set(false)" title="Toggle Material Editor" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors" [class.bg-sky-100]="isMaterialEditorOpen()" [class.dark:bg-sky-900]="isMaterialEditorOpen()">
         <span class="material-symbols-outlined">palette</span>
       </button>
-      <button (click)="isAboutPanelOpen.set(true)" title="About App" class="w-12 h-12 bg-white dark:bg-white/10 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors">
+      <button (click)="isLightEditorOpen.set(!isLightEditorOpen()); isMaterialEditorOpen.set(false)" title="Toggle Light Editor" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors" [class.bg-sky-100]="isLightEditorOpen()" [class.dark:bg-sky-900]="isLightEditorOpen()">
+        <span class="material-symbols-outlined">light_mode</span>
+      </button>
+      <button (click)="isAboutPanelOpen.set(true)" title="About App" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
         <span class="material-symbols-outlined">help_outline</span>
       </button>
+      <a href="https://github.com/mrunitycreations/Simple-HDRI-Viewer" target="_blank" rel="noopener noreferrer" title="View on GitHub" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
+        <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
     </div>
 
     <!-- Bottom Left Buttons -->
     <div class="absolute bottom-4 left-4 z-10 flex items-center gap-2">
-      <button (click)="resetView()" title="Reset View" class="w-12 h-12 bg-white dark:bg-white/10 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors">
+      <button (click)="resetView()" title="Reset View" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
         <span class="material-symbols-outlined">center_focus_strong</span>
       </button>
-      <button (click)="renderScene()" title="Render Scene" class="w-12 h-12 bg-white dark:bg-white/10 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 transition-colors">
+      <button (click)="renderScene()" title="Render Scene" class="w-12 h-12 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
         <span class="material-symbols-outlined">photo_camera</span>
       </button>
     </div>
     
+    <!-- Light Editor Panel -->
+    <div class="absolute top-4 left-4 bottom-4 w-80 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-xl ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex flex-col p-4 text-slate-900 dark:text-white overflow-y-auto transition-transform duration-300 ease-in-out"
+        [class.translate-x-0]="isLightEditorOpen()"
+        [class.-translate-x-[calc(100%+2rem)]]="!isLightEditorOpen()">
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-black/10 dark:border-white/10">
+          <h1 class="text-xl font-bold tracking-wider">Light Editor</h1>
+          <button (click)="isLightEditorOpen.set(false)" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+            @if (isPickingLight()) {
+                <div class="bg-sky-100 dark:bg-sky-900/50 p-4 rounded-lg text-center animate-pulse border border-sky-500">
+                    <p class="font-bold text-sky-800 dark:text-sky-200">Pick Light Mode</p>
+                    <p class="text-xs text-sky-700 dark:text-sky-300 mt-1">Click a highlight on the <br><strong>Metal Sphere</strong> to place light.</p>
+                    <button (click)="isPickingLight.set(false)" class="mt-3 text-xs px-3 py-1 bg-white dark:bg-black/30 rounded border border-black/10 hover:bg-black/5 dark:hover:bg-black/50 transition">Cancel</button>
+                </div>
+            } @else {
+                 <button (click)="isPickingLight.set(true)" class="w-full py-2 px-4 bg-sky-600 hover:bg-sky-500 text-white rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined !text-lg">flare</span>
+                    Pick Highlight from Scene
+                </button>
+            }
+
+            <div class="bg-black/5 dark:bg-white/5 rounded-lg p-3">
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Or click on image to add light source</p>
+                <div class="relative w-full aspect-[2/1] rounded-md overflow-hidden bg-black/20 ring-1 ring-black/10 dark:ring-white/20 cursor-crosshair group"
+                     (mousemove)="onHdriPreviewMouseMove($event)"
+                     (mouseup)="onHdriPreviewMouseUp()"
+                     (mouseleave)="onHdriPreviewMouseUp()">
+                    @if (hdriPreviewUrl()) {
+                        <img #hdriPreviewImage [src]="hdriPreviewUrl()" class="w-full h-full object-cover" draggable="false" (click)="onHdriPreviewClick($event)">
+                        
+                        <!-- Light Markers -->
+                        @for (light of manualLights(); track light.id) {
+                            <div class="absolute w-4 h-4 -ml-2 -mt-2 rounded-full border-2 shadow-sm transition-transform hover:scale-125 cursor-grab active:cursor-grabbing z-10"
+                                 (mousedown)="onLightMarkerMouseDown($event, light.id)"
+                                 [style.left.%]="light.u * 100"
+                                 [style.top.%]="light.v * 100"
+                                 [style.background-color]="light.color"
+                                 [class.border-white]="selectedLightId() !== light.id"
+                                 [class.border-sky-500]="selectedLightId() === light.id"
+                                 [class.scale-125]="selectedLightId() === light.id">
+                            </div>
+                        }
+                    } @else {
+                        <div class="w-full h-full flex items-center justify-center text-xs text-slate-500">Generating Preview...</div>
+                    }
+                </div>
+            </div>
+
+            @if (getSelectedLight(); as selectedLight) {
+                <div class="p-3 bg-white/50 dark:bg-black/20 rounded-lg border border-black/10 dark:border-white/10 animate-fade-in">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center justify-between">
+                        <span>Selected Light</span>
+                        <button (click)="removeLight(selectedLight.id)" class="text-red-500 hover:text-red-600 transition-colors" title="Delete Light">
+                            <span class="material-symbols-outlined !text-lg">delete</span>
+                        </button>
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-[auto,1fr] items-center gap-3">
+                            <label class="text-xs font-medium text-slate-700 dark:text-slate-200">Color</label>
+                            <div class="relative w-full h-8 rounded-md border border-black/20 dark:border-white/30 overflow-hidden">
+                                <input type="color" [value]="selectedLight.color" 
+                                       (input)="updateSelectedLight({color: $any($event.target).value})" 
+                                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                <div class="w-full h-full pointer-events-none" [style.background-color]="selectedLight.color"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex justify-between">
+                                <label class="text-xs font-medium text-slate-700 dark:text-slate-200">Intensity</label>
+                                <span class="text-xs font-mono text-slate-600 dark:text-slate-300">{{selectedLight.intensity.toFixed(2)}}</span>
+                            </div>
+                            <input type="range" min="0" max="10" step="0.1" 
+                                   [value]="selectedLight.intensity" 
+                                   (input)="updateSelectedLight({intensity: +$any($event.target).value})"
+                                   class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        </div>
+                        
+                         <div class="flex items-center justify-between pt-1">
+                            <label class="text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer" 
+                                   (click)="updateSelectedLight({castShadow: !selectedLight.castShadow})">Cast Shadow</label>
+                            <button
+                                type="button"
+                                role="switch"
+                                [attr.aria-checked]="selectedLight.castShadow"
+                                (click)="updateSelectedLight({castShadow: !selectedLight.castShadow})"
+                                class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                [class.bg-sky-600]="selectedLight.castShadow"
+                                [class.bg-slate-300]="!selectedLight.castShadow"
+                                [class.dark:bg-slate-600]="!selectedLight.castShadow">
+                                <span
+                                    aria-hidden="true"
+                                    class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                    [class.translate-x-4]="selectedLight.castShadow"
+                                    [class.translate-x-0]="!selectedLight.castShadow">
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            } @else {
+                <div class="text-center py-6 text-sm text-slate-500 dark:text-slate-400">
+                    Select a light to edit properties
+                </div>
+            }
+        </div>
+    </div>
+
     <!-- Material Editor Panel -->
     <div class="absolute top-4 left-4 bottom-4 w-80 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-xl ring-1 ring-black/10 dark:ring-white/10 shadow-2xl flex flex-col p-4 text-slate-900 dark:text-white overflow-y-auto transition-transform duration-300 ease-in-out"
       [class.translate-x-0]="isMaterialEditorOpen()"
@@ -73,6 +202,12 @@
         <button (click)="isMaterialEditorOpen.set(false)" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
           <span class="material-symbols-outlined">close</span>
         </button>
+      </div>
+      
+      <!-- Selection Mode Indicator -->
+      <div class="p-3 mb-4 bg-sky-100 dark:bg-sky-900/50 rounded-lg text-sky-800 dark:text-sky-200 text-sm flex items-start gap-2">
+        <span class="material-symbols-outlined !text-base mt-0.5">ads_click</span>
+        <span>Selection mode is active. Click an object in the scene to edit it.</span>
       </div>
 
       <!-- Material Selector -->
@@ -86,6 +221,7 @@
           <option value="Matte" [selected]="selectedMaterial() === 'Matte'" class="bg-white dark:bg-slate-800">White Sphere</option>
           <option value="Chrome" [selected]="selectedMaterial() === 'Chrome'" class="bg-white dark:bg-slate-800">Metal Sphere</option>
           <option value="Plastic" [selected]="selectedMaterial() === 'Plastic'" class="bg-white dark:bg-slate-800">Blue Sphere</option>
+          <option value="Color Checker" [selected]="selectedMaterial() === 'Color Checker'" class="bg-white dark:bg-slate-800">Color Checker</option>
         </select>
       </div>
 
@@ -98,7 +234,7 @@
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="floor-tiling" class="text-sm font-medium text-slate-700 dark:text-slate-200">Tiling</label>
                 <input id="floor-tiling" type="range" min="1" max="100" step="1" [value]="floorTiling()" 
-                       (input)="floorTiling.set(+$any($event.target).value)"
+                       (input)="floorTiling.set(+$any($event.target).value); currentPreset.set('Custom')"
                        class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ floorTiling() }}</span>
               </div>
@@ -121,14 +257,14 @@
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="glass-roughness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Roughness</label>
                 <input id="glass-roughness" type="range" min="0" max="1" step="0.01" [value]="glassRoughness()" 
-                       (input)="glassRoughness.set(+$any($event.target).value)"
+                       (input)="glassRoughness.set(+$any($event.target).value); currentPreset.set('Custom')"
                        class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ glassRoughness().toFixed(2) }}</span>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="glass-ior" class="text-sm font-medium text-slate-700 dark:text-slate-200">IOR</label>
                 <input id="glass-ior" type="range" min="1" max="2.33" step="0.01" [value]="glassIor()" 
-                       (input)="glassIor.set(+$any($event.target).value)"
+                       (input)="glassIor.set(+$any($event.target).value); currentPreset.set('Custom')"
                        class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ glassIor().toFixed(2) }}</span>
               </div>
@@ -151,18 +287,18 @@
                <div class="grid grid-cols-[auto,1fr] items-center gap-3">
                   <label class="text-sm font-medium text-slate-700 dark:text-slate-200">Color</label>
                   <div class="relative w-full h-8 rounded-md border border-black/20 dark:border-white/30 overflow-hidden">
-                    <input type="color" [value]="matteColor()" (input)="matteColor.set($any($event.target).value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <input type="color" [value]="matteColor()" (input)="matteColor.set($any($event.target).value); currentPreset.set('Custom')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="w-full h-full pointer-events-none" [style.background-color]="matteColor()"></div>
                   </div>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="matte-roughness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Roughness</label>
-                <input id="matte-roughness" type="range" min="0" max="1" step="0.01" [value]="matteRoughness()" (input)="matteRoughness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="matte-roughness" type="range" min="0" max="1" step="0.01" [value]="matteRoughness()" (input)="matteRoughness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ matteRoughness().toFixed(2) }}</span>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="matte-metalness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Metalness</label>
-                <input id="matte-metalness" type="range" min="0" max="1" step="0.01" [value]="matteMetalness()" (input)="matteMetalness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="matte-metalness" type="range" min="0" max="1" step="0.01" [value]="matteMetalness()" (input)="matteMetalness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ matteMetalness().toFixed(2) }}</span>
               </div>
               <div class="flex items-center gap-2 pt-2 border-t border-black/10 dark:border-white/10">
@@ -184,18 +320,18 @@
                <div class="grid grid-cols-[auto,1fr] items-center gap-3">
                   <label class="text-sm font-medium text-slate-700 dark:text-slate-200">Color</label>
                   <div class="relative w-full h-8 rounded-md border border-black/20 dark:border-white/30 overflow-hidden">
-                    <input type="color" [value]="chromeColor()" (input)="chromeColor.set($any($event.target).value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <input type="color" [value]="chromeColor()" (input)="chromeColor.set($any($event.target).value); currentPreset.set('Custom')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="w-full h-full pointer-events-none" [style.background-color]="chromeColor()"></div>
                   </div>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="chrome-roughness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Roughness</label>
-                <input id="chrome-roughness" type="range" min="0" max="1" step="0.01" [value]="chromeRoughness()" (input)="chromeRoughness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="chrome-roughness" type="range" min="0" max="1" step="0.01" [value]="chromeRoughness()" (input)="chromeRoughness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ chromeRoughness().toFixed(2) }}</span>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="chrome-metalness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Metalness</label>
-                <input id="chrome-metalness" type="range" min="0" max="1" step="0.01" [value]="chromeMetalness()" (input)="chromeMetalness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="chrome-metalness" type="range" min="0" max="1" step="0.01" [value]="chromeMetalness()" (input)="chromeMetalness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ chromeMetalness().toFixed(2) }}</span>
               </div>
               <div class="flex items-center gap-2 pt-2 border-t border-black/10 dark:border-white/10">
@@ -217,18 +353,18 @@
               <div class="grid grid-cols-[auto,1fr] items-center gap-3">
                   <label class="text-sm font-medium text-slate-700 dark:text-slate-200">Color</label>
                   <div class="relative w-full h-8 rounded-md border border-black/20 dark:border-white/30 overflow-hidden">
-                    <input type="color" [value]="plasticColor()" (input)="plasticColor.set($any($event.target).value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <input type="color" [value]="plasticColor()" (input)="plasticColor.set($any($event.target).value); currentPreset.set('Custom')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="w-full h-full pointer-events-none" [style.background-color]="plasticColor()"></div>
                   </div>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="plastic-roughness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Roughness</label>
-                <input id="plastic-roughness" type="range" min="0" max="1" step="0.01" [value]="plasticRoughness()" (input)="plasticRoughness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="plastic-roughness" type="range" min="0" max="1" step="0.01" [value]="plasticRoughness()" (input)="plasticRoughness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ plasticRoughness().toFixed(2) }}</span>
               </div>
               <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                 <label for="plastic-metalness" class="text-sm font-medium text-slate-700 dark:text-slate-200">Metalness</label>
-                <input id="plastic-metalness" type="range" min="0" max="1" step="0.01" [value]="plasticMetalness()" (input)="plasticMetalness.set(+$any($event.target).value)" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="plastic-metalness" type="range" min="0" max="1" step="0.01" [value]="plasticMetalness()" (input)="plasticMetalness.set(+$any($event.target).value); currentPreset.set('Custom')" class="w-full h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb">
                 <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ plasticMetalness().toFixed(2) }}</span>
               </div>
               <div class="flex items-center gap-2 pt-2 border-t border-black/10 dark:border-white/10">
@@ -242,6 +378,29 @@
                   </button>
                 }
               </div>
+            </div>
+          }
+          @case('Color Checker') {
+            <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-3">Color Checker</h2>
+            <div class="grid grid-cols-6 gap-2">
+              @for (row of colorCheckerColors(); track $index; let rowIndex = $index) {
+                @for (color of row; track $index; let colIndex = $index) {
+                  <div class="relative w-full aspect-square rounded-md border border-black/20 dark:border-white/30 overflow-hidden">
+                    <input type="color" 
+                           [value]="color"
+                           (input)="updateColorCheckerColor(rowIndex, colIndex, $any($event.target).value)" 
+                           class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div class="w-full h-full pointer-events-none" 
+                         [style.background-color]="color">
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+            <div class="mt-4">
+              <button (click)="resetColorChecker()" class="w-full text-center px-4 py-2 text-sm font-medium text-slate-900 dark:text-white bg-black/5 dark:bg-white/10 rounded-md hover:bg-black/10 dark:hover:bg-white/20 ring-1 ring-inset ring-black/20 dark:ring-white/30 transition-colors">
+                Reset Colors
+              </button>
             </div>
           }
         }
@@ -276,7 +435,7 @@
         <h2 class="text-sm font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-3">Environment</h2>
         <select id="hdri-select" 
           class="bg-white/50 dark:bg-white/10 border-0 text-slate-900 dark:text-white text-sm rounded-md focus:ring-2 focus:ring-inset focus:ring-sky-500 block w-full p-2.5 mb-2 ring-1 ring-inset ring-black/20 dark:ring-white/30"
-          (change)="selectedHdriName.set($any($event.target).value)">
+          (change)="switchHdri($any($event.target).value)">
           @for(hdri of hdriList(); track hdri.name) {
             <option [value]="hdri.name" [selected]="hdri.name === selectedHdriName()" class="bg-white dark:bg-slate-800">{{ hdri.name }}</option>
           }
@@ -318,18 +477,31 @@
             <span class="text-sm font-mono w-10 text-center text-slate-800 dark:text-slate-100">{{ blur().toFixed(2) }}</span>
           </div>
 
-          <!-- Tone Mapping Dropdown -->
+          <!-- Color Pipeline Dropdown -->
           <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
-            <label for="tone-mapping" class="text-sm font-medium text-slate-700 dark:text-slate-200">Tone Mapping</label>
-            <select id="tone-mapping" 
+            <label for="color-space" class="text-sm font-medium text-slate-700 dark:text-slate-200">Color Pipeline</label>
+            <select id="color-space" 
               class="col-span-2 bg-white/50 dark:bg-white/10 border-0 text-slate-900 dark:text-white text-sm rounded-md focus:ring-2 focus:ring-inset focus:ring-sky-500 block w-full p-2.5 ring-1 ring-inset ring-black/20 dark:ring-white/30"
-              (change)="toneMapping.set($any($event.target).value)">
-              <option value="ACES Filmic" [selected]="toneMapping() === 'ACES Filmic'" class="bg-white dark:bg-slate-800">ACES Filmic</option>
-              <option value="Reinhard" [selected]="toneMapping() === 'Reinhard'" class="bg-white dark:bg-slate-800">Reinhard</option>
-              <option value="Cineon" [selected]="toneMapping() === 'Cineon'" class="bg-white dark:bg-slate-800">Cineon</option>
-              <option value="None" [selected]="toneMapping() === 'None'" class="bg-white dark:bg-slate-800">None</option>
+              (change)="onColorSpaceChange($any($event.target).value)">
+              <option value="ACES Filmic" [selected]="colorSpace() === 'ACES Filmic'" class="bg-white dark:bg-slate-800">ACES Filmic</option>
+              <option value="Linear sRGB" [selected]="colorSpace() === 'Linear sRGB'" class="bg-white dark:bg-slate-800">Linear sRGB</option>
             </select>
           </div>
+
+          <!-- Tone Mapping Dropdown -->
+          @if(colorSpace() === 'Linear sRGB') {
+            <div class="grid grid-cols-[auto,1fr,auto] items-center gap-3">
+              <label for="tone-mapping" class="text-sm font-medium text-slate-700 dark:text-slate-200">Tone Mapping</label>
+              <select id="tone-mapping" 
+                class="col-span-2 bg-white/50 dark:bg-white/10 border-0 text-slate-900 dark:text-white text-sm rounded-md focus:ring-2 focus:ring-inset focus:ring-sky-500 block w-full p-2.5 ring-1 ring-inset ring-black/20 dark:ring-white/30"
+                (change)="toneMapping.set($any($event.target).value)">
+                <option value="Reinhard" [selected]="toneMapping() === 'Reinhard'" class="bg-white dark:bg-slate-800">Reinhard</option>
+                <option value="Cineon" [selected]="toneMapping() === 'Cineon'" class="bg-white dark:bg-slate-800">Cineon</option>
+                <option value="Grayscale" [selected]="toneMapping() === 'Grayscale'" class="bg-white dark:bg-slate-800">Grayscale</option>
+                <option value="None" [selected]="toneMapping() === 'None'" class="bg-white dark:bg-slate-800">None</option>
+              </select>
+            </div>
+          }
 
           <!-- Presets Selector -->
           <div class="grid grid-cols-[auto,1fr] items-center gap-3">
@@ -338,34 +510,31 @@
               <button (click)="previousPreset()" title="Previous Preset" class="p-1 rounded-md hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
                 <span class="material-symbols-outlined !text-sm">arrow_back_ios</span>
               </button>
-              <span class="text-sm font-medium select-none px-2">{{ currentPreset() }}</span>
+              <span class="text-sm font-medium select-none px-2 truncate" [title]="(currentPreset() === 'Custom' && customPresetName()) ? customPresetName() : currentPreset()">
+                @if (currentPreset() === 'Custom' && customPresetName()) {
+                  {{ customPresetName() }}
+                } @else {
+                  {{ currentPreset() }}
+                }
+              </span>
               <button (click)="nextPreset()" title="Next Preset" class="p-1 rounded-md hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
                 <span class="material-symbols-outlined !text-sm">arrow_forward_ios</span>
               </button>
             </div>
           </div>
-
-          <!-- Shadows Toggle -->
-          <div class="flex items-center justify-between">
-            <label for="show-shadows" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="shadowsVisible.set(!shadowsVisible())">Shadows <span class="text-xs text-slate-400">(beta)</span></label>
-            <button
-                id="show-shadows"
-                type="button"
-                role="switch"
-                [attr.aria-checked]="shadowsVisible()"
-                (click)="shadowsVisible.set(!shadowsVisible())"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900"
-                [class.bg-sky-600]="shadowsVisible()"
-                [class.bg-slate-300]="!shadowsVisible()"
-                [class.dark:bg-slate-600]="!shadowsVisible()">
-                <span
-                    aria-hidden="true"
-                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                    [class.translate-x-5]="shadowsVisible()"
-                    [class.translate-x-0]="!shadowsVisible()">
-                </span>
-            </button>
-          </div>
+          @if (currentPreset() === 'Custom') {
+            <div class="flex items-center space-x-2">
+              <button (click)="savePreset()" class="flex-1 flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-md hover:bg-sky-500 transition-colors">
+                <span class="material-symbols-outlined !text-sm">save</span>
+                <span>Save Preset</span>
+              </button>
+              <label class="flex-1 flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-slate-900 dark:text-white bg-transparent rounded-md cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 ring-1 ring-inset ring-black/20 dark:ring-white/30 transition-colors">
+                <span class="material-symbols-outlined !text-sm">arrow_circle_up</span>
+                <span>Load Preset</span>
+                <input type="file" accept=".shvpreset" class="hidden" (change)="onPresetLoad($event)">
+              </label>
+            </div>
+          }
 
           <!-- Objects visibility section -->
           <div class="pt-4 mt-4 border-t border-black/10 dark:border-white/10 space-y-3">
@@ -379,13 +548,13 @@
 
             <!-- Spheres Toggle -->
             <div class="flex items-center justify-between pt-1">
-              <label for="show-spheres" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="spheresVisible.set(!spheresVisible())">Spheres</label>
+              <label for="show-spheres" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="spheresVisible.set(!spheresVisible()); currentPreset.set('Custom')">Spheres</label>
               <button
                   id="show-spheres"
                   type="button"
                   role="switch"
                   [attr.aria-checked]="spheresVisible()"
-                  (click)="spheresVisible.set(!spheresVisible())"
+                  (click)="spheresVisible.set(!spheresVisible()); currentPreset.set('Custom')"
                   class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900"
                   [class.bg-sky-600]="spheresVisible()"
                   [class.bg-slate-300]="!spheresVisible()"
@@ -401,13 +570,13 @@
             
             <!-- Color Checker Toggle -->
             <div class="flex items-center justify-between">
-              <label for="show-color-checker" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="colorCheckerVisible.set(!colorCheckerVisible())">Color Checker</label>
+              <label for="show-color-checker" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="colorCheckerVisible.set(!colorCheckerVisible()); currentPreset.set('Custom')">Color Checker</label>
               <button
                   id="show-color-checker"
                   type="button"
                   role="switch"
                   [attr.aria-checked]="colorCheckerVisible()"
-                  (click)="colorCheckerVisible.set(!colorCheckerVisible())"
+                  (click)="colorCheckerVisible.set(!colorCheckerVisible()); currentPreset.set('Custom')"
                   class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900"
                   [class.bg-sky-600]="colorCheckerVisible()"
                   [class.bg-slate-300]="!colorCheckerVisible()"
@@ -423,13 +592,13 @@
 
             <!-- Ground Toggle -->
             <div class="flex items-center justify-between">
-              <label for="show-ground" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="groundVisible.set(!groundVisible())">Ground</label>
+              <label for="show-ground" class="text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer" (click)="groundVisible.set(!groundVisible()); currentPreset.set('Custom')">Ground</label>
               <button
                   id="show-ground"
                   type="button"
                   role="switch"
                   [attr.aria-checked]="groundVisible()"
-                  (click)="groundVisible.set(!groundVisible())"
+                  (click)="groundVisible.set(!groundVisible()); currentPreset.set('Custom')"
                   class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900"
                   [class.bg-sky-600]="groundVisible()"
                   [class.bg-slate-300]="!groundVisible()"
@@ -500,13 +669,11 @@
                     <div class="text-center mb-6">
                       <img src="https://github.com/mrunitycreations/Simple-HDRI-Viewer/blob/main/SHV_logo.png?raw=true" alt="Simple HDRI Viewer Logo" class="mx-auto h-20 w-auto mb-4 rounded-lg">
                       <h3 class="text-xl font-bold text-slate-900 dark:text-white">Simple HDRI Viewer</h3>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">Version: Alpha 12.7.2025</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">Version: Alpha 12.20.2025</p>
                     </div>
                     
                     <div class="space-y-3">
                       <p>A simple yet surprisingly powerful tool for fast HDRI previews. Load your HDRI, rotate it freely, tweak material properties, or jump straight into one of four ready-made presets — everything is built for instant visual feedback.</p>
-                      
-                      <p>The app can also generate a directional light based on your HDRI (perfect for scenes lit by the sun). This feature is currently in beta, but it’s evolving fast.</p>
                       
                       <div class="pt-2">
                         <h4 class="font-semibold text-slate-800 dark:text-slate-100">Need a quick final image?</h4>
@@ -531,10 +698,10 @@
                     <ul class="list-disc list-inside space-y-2 mt-3">
                         <li><strong>Get Started:</strong> Drag and drop an HDRI file (.hdr, .pic) anywhere onto the window, or use the "Upload HDRI" button in the right panel. Or select the Load Project button to load a project. Don't have an HDRI or project handy? No problem, use Try Demo Scene as a playground to get familiar with the Editor!</li>
                         <li><strong>Environment Controls:</strong> The right-hand panel allows you to switch between loaded HDRIs and adjust global settings like Rotation, Exposure, and background Blur.You can also hide and show objects on the scene. This allows you to view the HDRI or prepare the scene for rendering.</li>
-                        <li><strong>Material Editor:</strong> Click the <span class="material-symbols-outlined !text-sm align-middle inline-block">palette</span> icon on the top left to open the material editor. Here you can select different objects in the scene (like the spheres or the floor) and modify their properties.</li>
-                        <li><strong>Presets:</strong> Use the preset selector to quickly switch between different scene setups, useful for checking your lighting on skin tones, grayscale values, and more.</li>
-                        <li><strong>Save & Load:</strong> Use the "Save" and "Load" buttons to save your entire scene setup, including loaded HDRIs and material settings, into a single `.hdriv` project file.</li>
-                        <li><strong>Rendering:</strong> Use the power of our app to render! Just click on the camera icon in the lower left corner and the render will be ready in a second. Choose where you want to download it.</li>
+                        <li><strong>Material Editor:</strong> Click the <span class="material-symbols-outlined !text-sm align-middle inline-block">palette</span> icon on the top left to open the material editor. Click objects in the scene to select them.</li>
+                        <li><strong>Light Editor:</strong> Click the <span class="material-symbols-outlined !text-sm align-middle inline-block">light_mode</span> icon on the top left. Click on the HDRI preview image to place new directional lights. Select existing lights by clicking their markers to adjust intensity, color, and shadows.</li>
+                        <li><strong>Presets:</strong> Use the preset selector to quickly switch between different scene setups.</li>
+                        <li><strong>Save & Load:</strong> Use the "Save" and "Load" buttons to save your entire scene setup into a single `.hdriv` project file.</li>
                     </ul>
                   </div>
               }
@@ -542,10 +709,29 @@
                   <div class="animate-content-fade-in">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white">Changelog</h3>
                     <div class="space-y-3 mt-3">
+                         <div>
+                            <p class="font-semibold text-slate-800 dark:text-slate-100">Alpha 12.20.2025</p>
+                            <ul class="list-disc list-inside pl-2 text-slate-600 dark:text-slate-400">
+                                <li>Updated UI.</li>
+                                <li>Added selection of color profiles: ACES Filmic and sRGB Linear.</li>
+                                <li>Added preset editor functionality when selecting 'Custom' or modifying materials. Added capability to save and load custom presets.</li>
+                                <li>Material Editor now supports selecting objects directly in the scene, not just via the dropdown.</li>
+                                <li>Replaced automatic light generation with a manual Light Editor system.</li>
+                                <li>Improved encryption system for .hdriv projects and overall application security.</li>
+                            </ul>
+                        </div>
+                         <div>
+                            <p class="font-semibold text-slate-800 dark:text-slate-100">Alpha 12.8.2025</p>
+                            <ul class="list-disc list-inside pl-2 text-slate-600 dark:text-slate-400">
+                                <li>Added Light Editor for manual placement of directional lights.</li>
+                                <li>Replaced automatic shadow system with manual light control.</li>
+                            </ul>
+                        </div>
                         <div>
                             <p class="font-semibold text-slate-800 dark:text-slate-100">Alpha 12.7.2025</p>
                             <ul class="list-disc list-inside pl-2 text-slate-600 dark:text-slate-400">
                                 <li>Initial public alpha release.</li>
+                                <li>Added interactive object selection to the Material Editor.</li>
                             </ul>
                         </div>
                     </div>

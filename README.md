@@ -25,12 +25,14 @@ Preview how your HDRI behaves under different color responses and LUTs using the
 
 ![SHV_Tonnemaping](https://github.com/user-attachments/assets/ad5f712a-4efc-448e-bec8-3b6c95f141f0)
 
-### Real-Time Shadow Computation
-SHV can generate **real-time shadows** based on the brightest light source in the HDRI, making it ideal for sky maps with a visible sun.
+### Real-Time Light Editor
+SHV now allows manually set up multiple light sources using an HDRI image as an interface. In addition, light sources can be also created using a metal sphere in the scene.
 
-![SHV_Light_computation](https://github.com/user-attachments/assets/48b08ec7-3bca-42eb-97c0-8e7439b6b02b)
+![Light_editor](https://github.com/user-attachments/assets/29b2d7f4-ecb0-445b-940f-c0576a7d5315)
 
-> ⚠️ **Note:** Handling multiple strong light sources is currently limited and will be improved in future updates.
+> ⚠️ **Known bugs:**
+> - The light source point may not match the light source in the scene. 
+> - When setting up a light source using a metal sphere, the light intensity is significantly lower and requires additional adjustment.
 
 ### Material Test Presets
 Evaluate lighting behavior on different materials using built-in presets:
@@ -43,6 +45,9 @@ Evaluate lighting behavior on different materials using built-in presets:
 
 ### Custom Preset Creation
 Create your own testing presets:
+
+![Screenshot 2025-12-21 090658 copy](https://github.com/user-attachments/assets/dbccd60d-7de8-4496-b15b-7b4c51fef01d)
+
 - Select **Custom Preset**
 - Adjust material parameters
 - Use **Save Preset** to store it on your device
@@ -56,10 +61,15 @@ Fine-tune test materials in real time:
 - Textures
 
 ![Material editor](https://github.com/user-attachments/assets/b0b89e49-7db0-4d67-af1b-523af3513dfc)
-
 Ideal for evaluating specular response, contrast, and surface behavior.
 
-### 👁 Scene Object Control
+
+### Color Checker settings are now available, allowing you to adjust your colors in sRGB values.
+
+<img width="390" height="675" alt="image" src="https://github.com/user-attachments/assets/4e68f062-a5fd-407e-95ff-cbf3135f246a" />
+
+
+### Scene Object Control
 Toggle any scene object on or off to focus on specific lighting elements.
 
 <img width="295" height="167" alt="image" src="https://github.com/user-attachments/assets/ed38f881-400f-442f-89b9-3242a628e9c5" />
